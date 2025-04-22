@@ -1,5 +1,5 @@
-from matrix_to_graph import matrix_to_graph
-from search import dfs
+from .matrix_to_graph import matrix_to_graph
+from .search import dfs
 
 def search_for_words(matrix)-> dict:
 
@@ -21,7 +21,6 @@ def search_for_words(matrix)-> dict:
             words = f.read().splitlines()
             return (word in words)
     letter_locations = {}    
-    matrix = [['k','a','r'],['a','m','a'],['a','m','k']]
     for i in range(len(matrix)):
         for j in range(len(matrix[0])):
             search = dfs(matrix_to_graph(matrix), f'{i},{j}', visited=None, res=[])
@@ -37,6 +36,9 @@ def search_for_words(matrix)-> dict:
 
 
     return letter_locations
+
+def main():
+    print('hi')
 
 if __name__ == '__main__':
     main()
