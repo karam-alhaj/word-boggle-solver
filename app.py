@@ -4,6 +4,20 @@ from solver import solver
 
 
 def main(matrix:list[list[str]],looper):
+    '''
+        Main function to display a matrix and draw lines between cells based on the search for words.
+        
+        Parameters:
+            matrix: list[list[str]]: The input matrix to be displayed.
+            looper: int: The index used to determine which word to draw.
+        
+        Returns:
+            None
+        
+        Example:
+            >>> main([['a','b','c'],['d','m','a'],['a','r','k']],0)
+            Displays the matrix and draws lines between cells based on the search for words.
+        '''
     ui.display_matrix(matrix)
     color = ['red', 'blue', 'green', 'yellow', 'purple', 'orange']
     letter_locations = solver.search_for_words(matrix)
@@ -23,22 +37,15 @@ def main(matrix:list[list[str]],looper):
         else:
             ui.draw_ball_at(start[0], start[1],color[looper])
 
-# n_words, locations in enumerate(letter_locations.items())
-
-
-
-def binder(event,i):
+def binder(event,i):#this is used to run the main function when the space key is pressed.
     if event.keysym == 'space':
         ui.canvas.delete('all')
         main([['a','b','c'],['d','m','a'],['a','r','k']],i[0])
         print(i)
         i[0]+=1
-        
-
 
 # created this boilerplate to insure that if I imported the file by mistake the function doesn't run   
 if __name__ == '__main__':
-    # main([['a','b','c'],['d','m','a'],['a','r','k']],0)
     i = [0] #made it a list to be passed by refrenced there is a better way but I'm too burntout to think about it
     ui.root.bind('<KeyRelease>', lambda event: binder(event,i))
     ui.root.mainloop()

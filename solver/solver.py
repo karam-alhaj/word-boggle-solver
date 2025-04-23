@@ -17,9 +17,20 @@ def search_for_words(matrix)-> dict:
 
 
     def is_in_dict(word):
+        '''
+            check if the word is in the dictionary.
+            Parameters:
+                word: str: The word to check.
+            Returns:
+                bool: True if the word is in the dictionary, False otherwise.
+            Example:
+                >>> is_in_dict('abc')
+                True
+        '''
         with open('solver/words/words.txt', 'r') as f:
             words = f.read().splitlines()
             return (word in words)
+        
     letter_locations = {}    
     for i in range(len(matrix)):
         for j in range(len(matrix[0])):

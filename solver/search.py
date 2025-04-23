@@ -1,4 +1,13 @@
 def dfs(graph, start_node, visited=None, res=None):
+    '''
+    depth first search of a graph
+
+    Parameters:
+        graph:dict: the graph to be searched
+        start_node: str: the node to start the search from
+        visited: list: visited nodes
+        res: list: result list 
+    '''
     if visited is None:
         visited = set()
     if res is None:
