@@ -1,80 +1,126 @@
 import tkinter as tk
-import random
+from tkinter import simpledialog
 
-root = tk.Tk()
-canvas = tk.Canvas(root, width=400, height=400)
+# Theme constants
+BG_COLOR = "#2e2e2e" # dark background color
+CELL_BG_COLOR_A = "#3e3e4e" # light cell background color
+CELL_BG_COLOR_B = "#4e4e5e" # dark cell background color
+GRID_LINE_COLOR = "#5e5e6e" # grid line color
+TEXT_COLOR = "#e0e0e0" # text color
+BALL_COLOR = "#ffa500"   # default ball color
+LINE_COLOR = "#1e90ff"   # default line color
+
+CELL_SIZE = 50
+BALL_RADIUS = 5
+
+# Initialize main window
+root = tk.Tk() 
+root.title("Word Search UI")
+root.configure(bg=BG_COLOR)
+
+# Initialize canvas
+canvas = tk.Canvas(
+    root,
+    width=400,
+    height=400,
+    bg=BG_COLOR,
+    highlightthickness=0
+)
+canvas.pack(padx=10, pady=10)
 
 
-def display_matrix(matrix:list):
-    '''
-        Display a matrix in a Tkinter canvas.
+def display_matrix(matrix: list):
+    """
+    Display a matrix in a themed Tkinter canvas.
+    """
+    canvas.delete("all")  # clear previous drawings
 
-        Parameters:
-            matrix: list: The input matrix to be displayed.
-
-        Returns:
-            None
-    '''
-    canvas.pack()
-    cell_size = 50
     for i, row in enumerate(matrix):
         for j, char in enumerate(row):
-            x1, y1 = j * cell_size, i * cell_size
-            x2, y2 = x1 + cell_size, y1 + cell_size
-            canvas.create_rectangle(x1, y1, x2, y2, outline="black")
-            canvas.create_text(x1 + cell_size / 2, y1 + cell_size / 2, text=char, font=("Arial", 16))
+            x1 = j * CELL_SIZE
+            y1 = i * CELL_SIZE
+            x2 = x1 + CELL_SIZE
+            y2 = y1 + CELL_SIZE
+
+            # Alternate cell background for checkerboard effect
+            fill = CELL_BG_COLOR_A if (i + j) % 2 == 0 else CELL_BG_COLOR_B
+
+            canvas.create_rectangle(
+                x1, y1, x2, y2,
+                outline=GRID_LINE_COLOR,
+                fill=fill,
+                width=1
+            )
+            canvas.create_text(
+                x1 + CELL_SIZE / 2,
+                y1 + CELL_SIZE / 2,
+                text=char,
+                fill=TEXT_COLOR,
+                font=("Helvetica", 18, "bold")
+            )
 
 
-def draw_ball_at(row, col,color='red'):# used instead of an arrow because it's easier to draw
-    '''
-        draws a ball at the given row and column in the Tkinter canvas.
-
-        Parameters:
-            row: int: The row index of the cell where the ball will be drawn.
-            col: int: The column index of the cell where the ball will be drawn.
-            color: str: The color of the ball.
-        Returns:
-            None
-        Example:
-            >>> draw_ball_at(1, 2, 'red')
-            Draws a red ball at the cell (1, 2) in the Tkinter canvas.
-    '''
-    cell_size = 50
-    x = col * cell_size + cell_size / 2
-    y = row * cell_size + cell_size / 2
-    radius = 3
-    canvas.create_oval(x - radius, y - radius, x + radius, y + radius, fill=color, outline=color)
+def draw_ball_at(row, col, color=BALL_COLOR):
+    """
+    Draws a ball at the given row and column in the themed canvas.
+    """
+    x = col * CELL_SIZE + CELL_SIZE / 2
+    y = row * CELL_SIZE + CELL_SIZE / 2
+    r = BALL_RADIUS
+    canvas.create_oval(
+        x - r, y - r, x + r, y + r,
+        fill=color,
+        outline=""
+    )
 
 
-def draw_line_between_cells(start, end,color='blue'):# used to connect the letters
-    '''
-        draws a line between two cells in the Tkinter canvas.
-
-        Parameters:
-            start: tuple: The starting cell coordinates (row, column).
-            end: tuple: The ending cell coordinates (row, column).
-            color: str: The color of the line.
-        Returns:
-            None
-        Example:
-            >>> draw_line_between_cells((0, 0), (1, 1), 'blue')
-            Draws a blue line between the cells (0, 0) and (1, 1) in the Tkinter canvas.
-
-    '''
-    cell_size = 50
-    start_x = (start[1] * cell_size + cell_size / 2)
-    start_y = (start[0] * cell_size + cell_size / 2) 
-    end_x = (end[1] * cell_size + cell_size / 2)
-    end_y = (end[0] * cell_size + cell_size / 2)
-    canvas.create_line(start_x, start_y, end_x, end_y, fill=color, width=2)
+def draw_line_between_cells(start, end, color=LINE_COLOR):
+    """
+    Draws a smooth line between two cells in the themed canvas.
+    """
+    x1 = start[1] * CELL_SIZE + CELL_SIZE / 2
+    y1 = start[0] * CELL_SIZE + CELL_SIZE / 2
+    x2 = end[1] * CELL_SIZE + CELL_SIZE / 2
+    y2 = end[0] * CELL_SIZE + CELL_SIZE / 2
+    canvas.create_line(
+        x1, y1, x2, y2,
+        fill=color,
+        width=3,
+        capstyle=tk.ROUND,
+        joinstyle=tk.ROUND
+    )
 
 
-def main():# only for testing
+def main():
+    # Hide window while prompting
+    root.withdraw()
+    rows = simpledialog.askinteger("Grid Size", "Enter number of rows:", minvalue=1, parent=root)
+    cols = simpledialog.askinteger("Grid Size", "Enter number of columns:", minvalue=1, parent=root)
+    if rows is None or cols is None:
+        root.destroy()
+        return
 
-    display_matrix([['a','b','c'],['d','f','g'],['h','g','k']])
-    draw_line_between_cells((0, 0), (1, 1))
+    # Build matrix through user input
+    matrix = []
+    for i in range(rows):
+        row = []
+        for j in range(cols):
+            letter = simpledialog.askstring(
+                "Input Letter",
+                f"Enter letter at (row {i+1}, col {j+1}):",
+                parent=root
+            )
+            row.append(letter[0] if letter else " ")
+        matrix.append(row)
+
+    # Show window and display
+    root.deiconify()
+    display_matrix(matrix)
+    draw_line_between_cells((0, 0), (2, 2))
+    draw_ball_at(2, 2)
     root.mainloop()
 
 
 if __name__ == '__main__':
     main()
+    
