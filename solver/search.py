@@ -9,14 +9,19 @@ def dfs(graph, start_node, visited=None, res=None):
         res: list: result list 
     '''
     if visited is None:
-        visited = set()
+        visited = set()  # set to store visited nodes
     if res is None:
-        res = []
+        res = [] # list to store the result
 
-    visited.add(start_node)
-    res.append(start_node)  # Add the node to the result list
-    for neighbor in graph[start_node][1]:
-        if neighbor not in visited:
-            dfs(graph, neighbor, visited, res)
-    
-    return res
+    stack = [start_node] # stack to store the nodes to be visited
+    while stack:
+        node = stack.pop() # get the last node in the stack
+        if node not in visited: 
+            visited.add(node) # mark the node as visited
+            res.append(node) # add the node to the result list
+        
+            for nbr in reversed(graph.get(node, [])): # reverse so neighbors are visited in original order
+                if nbr not in visited:
+                    stack.append(nbr) # add the neighbor to the stack
+    return res 
+ 
