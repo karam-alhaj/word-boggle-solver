@@ -25,7 +25,7 @@ def display_matrix(matrix:list):
             canvas.create_text(x1 + cell_size / 2, y1 + cell_size / 2, text=char, font=("Arial", 16))
 
 
-def draw_ball_at(row, col,color):# used instead of an arrow because it's easier to draw
+def draw_ball_at(row, col,color='red'):# used instead of an arrow because it's easier to draw
     '''
         draws a ball at the given row and column in the Tkinter canvas.
 
@@ -46,7 +46,7 @@ def draw_ball_at(row, col,color):# used instead of an arrow because it's easier 
     canvas.create_oval(x - radius, y - radius, x + radius, y + radius, fill=color, outline=color)
 
 
-def draw_line_between_cells(start, end,color):# used to connect the letters
+def draw_line_between_cells(start, end,color='blue'):# used to connect the letters
     '''
         draws a line between two cells in the Tkinter canvas.
 
